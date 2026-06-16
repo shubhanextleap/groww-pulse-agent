@@ -1,0 +1,8 @@
+target_product: "Groww"
+schedule: "Monday 09:00 IST"
+recipients:
+  - "product@example.com"
+  - "support@example.com"
+  - "leadership@example.com"
+time_window_weeks: 10
+pulse_doc_id: "1gK2oUNN3x7-GhvkLfxFLkzB35W0WXBQ_6LQq7ryNH9U"

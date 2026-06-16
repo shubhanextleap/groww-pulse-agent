@@ -1,0 +1,11 @@
+pydantic>=2.0.0
+PyYAML>=6.0.0
+google-play-scraper>=1.2.4
+sentence-transformers>=2.2.2
+umap-learn>=0.5.3
+hdbscan>=0.8.33
+groq>=0.5.0
+python-dotenv>=1.0.0
+requests>=2.25.1
+schedule>=1.2.0
+streamlit>=1.30.0

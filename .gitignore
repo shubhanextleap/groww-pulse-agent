@@ -1,0 +1,6 @@
+.env
+__pycache__/
+*.pyc
+data/cache/
+data/audit_log.json
+final_report.md
