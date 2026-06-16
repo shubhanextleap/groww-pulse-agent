@@ -32,8 +32,16 @@ Because `.env` files are strictly excluded from source control for security, Rai
 
 *(Note: See `.env.example` for the variable keys, but never commit your actual keys).*
 
-### 3. Access the Dashboard
-Once Railway finishes building, it will provide you with a public URL. Anyone with this URL can access the Streamlit dashboard to view the latest automatically generated weekly report!
+### 3. Setup the Remote MCP Server
+This AI Agent requires a remote **Google Workspace MCP Server** to handle appending the reports to Google Docs and drafting the notification emails.
+
+1. Create a separate GitHub repository for your MCP Server (built using FastAPI and Google API credentials).
+2. Deploy the MCP Server to Railway just like you did with the AI Agent.
+3. In your MCP Server's Railway variables, define your `GOOGLE_CREDENTIALS` (as a JSON string) and an `API_SECRET_KEY` for authentication.
+4. Go back to your **AI Agent's** Railway variables and add `MCP_BASE_URL` pointing to the public URL of your deployed MCP server (e.g., `https://your-mcp-server.up.railway.app`). This tells the AI Agent exactly where to send the final reports!
+
+### 4. Access the Dashboard
+Once Railway finishes building both services, anyone with the AI Agent's public URL can access the Streamlit dashboard to view the latest automatically generated weekly report!
 
 ## 💻 Running Locally
 
