@@ -45,5 +45,14 @@ class ClusteringEngine:
                 clusters[label] = []
             clusters[label].append(texts[i])
 
-        print(f"ClusteringEngine: Found {len(set(labels))} clusters (including noise label -1).")
-        return clusters
+        # Limit to Top 5 themes (excluding noise)
+        sorted_labels = sorted([k for k in clusters.keys() if k != -1], key=lambda k: len(clusters[k]), reverse=True)
+        top_5_labels = sorted_labels[:5]
+        
+        filtered_clusters = {}
+        for label in top_5_labels:
+            filtered_clusters[label] = clusters[label]
+            
+        # We can optionally keep the noise cluster for context, but since we have a strict word limit, we will omit it.
+        print(f"ClusteringEngine: Filtered down to {len(filtered_clusters)} top clusters.")
+        return filtered_clusters

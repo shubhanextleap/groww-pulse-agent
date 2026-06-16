@@ -20,40 +20,45 @@ class LLMSummarizer:
         # Rough estimation: 1 token ~= 4 characters or 0.75 words
         return len(text.split()) * 1.3
         
-    def summarize_cluster(self, cluster_id: int, reviews: list) -> str:
-        if cluster_id == -1:
-            theme_hint = "Miscellaneous / Outliers"
-        else:
-            theme_hint = f"Cluster {cluster_id}"
+    def generate_weekly_pulse(self, clusters: dict) -> str:
+        # Sample reviews from each cluster to form a representative context
+        context_blocks = []
+        for c_id, reviews in clusters.items():
+            sampled = reviews[:10] # Take up to 10 reviews per cluster
+            cluster_text = chr(10).join(f"- {r}" for r in sampled)
+            context_blocks.append(f"Theme Group {c_id}:\n{cluster_text}\n")
             
+        full_context = "\n".join(context_blocks)
+        
         prompt = f"""
-        You are analyzing user reviews for a financial app. Here is a cluster of similar reviews.
-        Theme: {theme_hint}
+        You are a product analytics expert analyzing recent App Store and Play Store reviews for a financial app.
+        Below are clusters of related reviews.
         
-        Reviews:
-        {chr(10).join(f"- {r}" for r in reviews)}
+        REVIEWS:
+        {full_context}
         
-        Please provide the following as plain, unformatted text (do NOT use markdown, bolding, asterisks, or hash symbols):
-        1. Top Theme: A concise 3-5 word name for this cluster's theme.
-        2. Real User Quote: Extract exactly one highly representative, verbatim quote from the text above.
-        3. Action Idea: One sentence suggesting how product/support can address this.
+        Generate a weekly one-page pulse note strictly as a JSON object with the following structure:
+        {{
+            "top_themes": ["Theme 1", "Theme 2", "Theme 3"],
+            "user_quotes": ["Exact quote 1 from text", "Exact quote 2 from text", "Exact quote 3 from text"],
+            "action_ideas": ["Idea 1", "Idea 2", "Idea 3"]
+        }}
+        
+        CONSTRAINTS:
+        1. Keep the entire response highly scannable and under 250 words total.
+        2. DO NOT include any PII (no usernames, emails, or IDs). Mask them if present.
+        3. Output ONLY the JSON object. No markdown wrapping, no extra text.
         """
         
-        # Rate Limit Protection
         estimated_tokens = self.estimate_tokens(prompt)
-        if estimated_tokens > self.tpm_limit:
-            print(f"WARNING: Chunk exceeds TPM limit ({estimated_tokens} tokens). Truncating...")
-            # Naive truncation for safety
-            prompt = prompt[:int(self.tpm_limit * 3)] 
-
-        print(f"LLMSummarizer: Sending request to Groq ({self.model_name}) - Est Tokens: {estimated_tokens}...")
+        print(f"LLMSummarizer: Sending weekly pulse request to Groq ({self.model_name}) - Est Tokens: {estimated_tokens}...")
         
         try:
             chat_completion = self.client.chat.completions.create(
                 messages=[
                     {
                         "role": "system",
-                        "content": "You are a product analytics expert."
+                        "content": "You are a product analytics expert that only outputs strict JSON."
                     },
                     {
                         "role": "user",
@@ -61,26 +66,15 @@ class LLMSummarizer:
                     }
                 ],
                 model=self.model_name,
-                temperature=0.3,
+                temperature=0.2,
+                response_format={"type": "json_object"}
             )
-            # Enforce strict 30 RPM limit locally (2s wait per request)
             time.sleep(2) 
             return chat_completion.choices[0].message.content
         except Exception as e:
             print(f"Error calling Groq API: {e}")
-            return "Error generating summary."
+            # Fallback JSON structure
+            return '{{"top_themes": ["Error generating report"], "user_quotes": [], "action_ideas": []}}'
 
     def process_all_clusters(self, clusters: dict) -> str:
-        final_report = "Weekly Pulse Summary\n\n"
-        for c_id, reviews in clusters.items():
-            if len(reviews) < 2 and c_id != -1:
-                continue # Skip tiny clusters unless it's noise
-                
-            # If a cluster is too big, chunk it to avoid hitting 12K TPM
-            # For simplicity in this implementation, we take a random sample of max 50 reviews per cluster
-            sampled_reviews = reviews[:50] 
-            
-            summary = self.summarize_cluster(c_id, sampled_reviews)
-            final_report += f"{summary}\n\n"
-            
-        return final_report
+        return self.generate_weekly_pulse(clusters)

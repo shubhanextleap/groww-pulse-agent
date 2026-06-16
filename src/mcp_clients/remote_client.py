@@ -13,7 +13,7 @@ class GoogleWorkspaceClient:
             "doc_id": doc_id,
             "content": content
         }
-        response = requests.post(url, json=payload)
+        response = requests.post(url, json=payload, timeout=5)
         response.raise_for_status()
         return response.json()
 
@@ -25,6 +25,6 @@ class GoogleWorkspaceClient:
             "subject": subject,
             "body": body
         }
-        response = requests.post(url, json=payload)
+        response = requests.post(url, json=payload, timeout=5)
         response.raise_for_status()
         return response.json()
