@@ -5,7 +5,7 @@ python scheduler.py &
 # If no data exists, run the agent in the background to instantly populate the dashboard!
 if [ ! -f "data/latest_report.json" ]; then
     echo "No report found. Triggering initial generation..."
-    python main.py --force &
+    python scheduler.py --test &
 fi
 
 # Start the Streamlit web dashboard
