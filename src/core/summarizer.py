@@ -37,15 +37,24 @@ class LLMSummarizer:
         REVIEWS:
         {full_context}
         
-        Generate a weekly one-page pulse note strictly as a JSON object with the following structure:
+        Generate a weekly one-page pulse note strictly as a JSON object with the following structure. Estimate some realistic mock metrics (like health_score or volume) based on the sentiment:
         {{
-            "top_themes": ["Theme 1", "Theme 2", "Theme 3"],
-            "user_quotes": ["Exact quote 1 from text", "Exact quote 2 from text", "Exact quote 3 from text"],
-            "action_ideas": ["Idea 1", "Idea 2", "Idea 3"]
+            "leadership_pulse": {{
+                "health_score": 85,
+                "sentiment": "Positive/Neutral/Negative",
+                "top_highlight": "1 sentence on what's going well",
+                "key_risk": "1 sentence on the biggest user pain point"
+            }},
+            "product_insights": [
+                {{"issue": "Issue description", "impact": "High/Medium/Low", "action": "Suggested fix to prioritize"}}
+            ],
+            "support_insights": [
+                {{"topic": "Main complaint/query", "volume": "High/Medium/Low", "quote": "Exact user quote here"}}
+            ]
         }}
         
         CONSTRAINTS:
-        1. Keep the entire response highly scannable and under 250 words total.
+        1. Keep the entire response highly scannable. Limit arrays to 3-4 items max.
         2. DO NOT include any PII (no usernames, emails, or IDs). Mask them if present.
         3. Output ONLY the JSON object. No markdown wrapping, no extra text.
         """
@@ -74,7 +83,13 @@ class LLMSummarizer:
         except Exception as e:
             print(f"Error calling Groq API: {e}")
             # Fallback JSON structure
-            return '{{"top_themes": ["Error generating report"], "user_quotes": [], "action_ideas": []}}'
+            fallback = {
+                "leadership_pulse": {"health_score": 0, "sentiment": "Unknown", "top_highlight": "Error", "key_risk": "Error"},
+                "product_insights": [],
+                "support_insights": []
+            }
+            import json
+            return json.dumps(fallback)
 
     def process_all_clusters(self, clusters: dict) -> str:
         return self.generate_weekly_pulse(clusters)

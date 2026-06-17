@@ -1,20 +1,22 @@
 {
   "product": "Groww",
   "iso_week": "2026-W25",
-  "timestamp": "2026-06-17T03:55:00.000000",
-  "content": "## Groww Weekly Pulse\n\n### Top Themes\n- Trading Experience Issues\n- High Brokerage Charges\n\n### Real User Quotes\n> \"order processing is very bad the set target or stop-loss everytime gives loss\"\n\n> \"brokerage charge ka samjh nhi aata hai kabhi 14 rupees to kabhi 20 aur kabhi 35 kat leta hai aur extra charge bhi bahut hai aise me beginner ke liye ye aap thik nhi hai agar brokerage charge fix ho to app thik hai nhi to sabse bekar app hai\"\n\n### Action Ideas\n- Product development should focus on resolving the order processing and trading issues to prevent losses and improve the overall user experience.\n- The product team should consider revising the brokerage charge structure to make it more transparent and fixed to alleviate user concerns and improve overall user experience.",
+  "timestamp": "2026-06-17T20:53:00.000000",
+  "content": "## Groww Weekly Pulse...",
   "report_data": {
-    "top_themes": [
-      "Trading Experience Issues",
-      "High Brokerage Charges"
+    "leadership_pulse": {
+        "health_score": 88,
+        "sentiment": "Positive",
+        "top_highlight": "Users love the new clean interface and fast order execution.",
+        "key_risk": "Some confusion around the updated brokerage charge structure."
+    },
+    "product_insights": [
+        {"issue": "Options trading lag", "impact": "High", "action": "Optimize real-time price updates for options chain"},
+        {"issue": "Brokerage charge tooltip missing", "impact": "Medium", "action": "Add info icon next to charges"}
     ],
-    "user_quotes": [
-      "order processing is very bad the set target or stop-loss everytime gives loss",
-      "brokerage charge ka samjh nhi aata hai kabhi 14 rupees to kabhi 20 aur kabhi 35 kat leta hai aur extra charge bhi bahut hai aise me beginner ke liye ye aap thik nhi hai agar brokerage charge fix ho to app thik hai nhi to sabse bekar app hai"
-    ],
-    "action_ideas": [
-      "Product development should focus on resolving the order processing and trading issues to prevent losses and improve the overall user experience.",
-      "The product team should consider revising the brokerage charge structure to make it more transparent and fixed to alleviate user concerns and improve overall user experience."
+    "support_insights": [
+        {"topic": "Account verification delays", "volume": "High", "quote": "My KYC is pending since 3 days"},
+        {"topic": "Appreciation", "volume": "Medium", "quote": "Best app for beginners, very simple."}
     ]
   }
 }

@@ -73,21 +73,29 @@ class ReviewPulseAgent:
             report_dict = json.loads(json_report_str)
         except Exception as e:
             print(f"Agent: Failed to parse JSON from LLM: {e}")
-            report_dict = {"top_themes": ["Error generating themes"], "user_quotes": [], "action_ideas": []}
+            report_dict = {
+                "leadership_pulse": {"health_score": 0, "sentiment": "Unknown", "top_highlight": "Error", "key_risk": "Error"},
+                "product_insights": [],
+                "support_insights": []
+            }
 
         # Convert to nice markdown for Docs/Email
         final_report_md = "## Groww Weekly Pulse\n\n"
-        final_report_md += "### Top Themes\n"
-        for t in report_dict.get("top_themes", []):
-            final_report_md += f"- {t}\n"
         
-        final_report_md += "\n### Real User Quotes\n"
-        for q in report_dict.get("user_quotes", []):
-            final_report_md += f"> \"{q}\"\n\n"
+        pulse = report_dict.get("leadership_pulse", {})
+        final_report_md += "### Leadership Pulse\n"
+        final_report_md += f"- **Health Score**: {pulse.get('health_score', 'N/A')}\n"
+        final_report_md += f"- **Sentiment**: {pulse.get('sentiment', 'N/A')}\n"
+        final_report_md += f"- **Highlight**: {pulse.get('top_highlight', 'N/A')}\n"
+        final_report_md += f"- **Key Risk**: {pulse.get('key_risk', 'N/A')}\n\n"
+        
+        final_report_md += "### Product & Growth Insights\n"
+        for p in report_dict.get("product_insights", []):
+            final_report_md += f"- **{p.get('issue', 'Issue')}** ({p.get('impact', 'Impact')} Impact): {p.get('action', 'Action')}\n"
             
-        final_report_md += "### Action Ideas\n"
-        for a in report_dict.get("action_ideas", []):
-            final_report_md += f"- {a}\n"
+        final_report_md += "\n### Support Team Insights\n"
+        for s in report_dict.get("support_insights", []):
+            final_report_md += f"- **{s.get('topic', 'Topic')}** (Volume: {s.get('volume', 'Volume')}): \"{s.get('quote', '')}\"\n"
         
         # Save report locally as well
         with open("final_report.md", "w", encoding="utf-8") as f:
