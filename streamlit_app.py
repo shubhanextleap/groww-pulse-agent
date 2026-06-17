@@ -164,7 +164,30 @@ def main():
         st.stop()
 
     # -- TABS FOR INTERACTIVITY --
-    tab1, tab2, tab3 = st.tabs(["👑 Leadership Pulse", "🚀 Product & Growth", "🎧 Support Teams"])
+    tab_themes, tab1, tab2, tab3 = st.tabs(["📌 Top Themes", "👑 Leadership Pulse", "🚀 Product & Growth", "🎧 Support Teams"])
+
+    with tab_themes:
+        st.markdown("<div class='section-title'>User Themes & Quotes</div>", unsafe_allow_html=True)
+        themes = report_data.get("top_themes", [])
+        
+        if themes:
+            for t in themes:
+                with st.container():
+                    st.markdown(f"### {t.get('theme_name', 'Theme')}")
+                    # Display summarized reviews as bullet points
+                    for r in t.get("reviews", []):
+                        st.markdown(f"- {r}")
+                    
+                    # Display exact quotes in styled blocks
+                    for q in t.get("quotes", []):
+                        st.markdown(f"""
+                        <div class='user-quote'>
+                            "{q}"
+                        </div>
+                        """, unsafe_allow_html=True)
+                    st.markdown("---")
+        else:
+            st.info("No themes extracted for this week.")
 
     with tab1:
         st.markdown("<div class='section-title'>Quick Weekly Health Pulse</div>", unsafe_allow_html=True)

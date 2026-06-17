@@ -32,13 +32,16 @@ class LLMSummarizer:
         
         prompt = f"""
         You are a product analytics expert analyzing recent App Store and Play Store reviews for a financial app.
-        Below are clusters of related reviews.
+        Below are clusters of related reviews, sourced STRICTLY from public review exports (no scraping behind logins).
         
         REVIEWS:
         {full_context}
         
-        Generate a weekly one-page pulse note strictly as a JSON object with the following structure. Estimate some realistic mock metrics (like health_score or volume) based on the sentiment:
+        Generate a weekly one-page pulse note strictly as a JSON object. Ensure the following structure is met. Estimate some realistic mock metrics (like health_score or volume) based on the sentiment:
         {{
+            "top_themes": [
+                {{"theme_name": "Onboarding/KYC/Payments/etc (Max 5 themes total)", "reviews": ["Summarized point 1", "Summarized point 2"], "quotes": ["Exact user quote 1", "Exact user quote 2"]}}
+            ],
             "leadership_pulse": {{
                 "health_score": 85,
                 "sentiment": "Positive/Neutral/Negative",
@@ -54,9 +57,10 @@ class LLMSummarizer:
         }}
         
         CONSTRAINTS:
-        1. Keep the entire response highly scannable. Limit arrays to 3-4 items max.
-        2. DO NOT include any PII (no usernames, emails, or IDs). Mask them if present.
-        3. Output ONLY the JSON object. No markdown wrapping, no extra text.
+        1. Group reviews into a MAXIMUM of 5 themes (e.g., onboarding, KYC, payments, statements, withdrawals).
+        2. Keep the ENTIRE notes scannable and <= 250 words total.
+        3. DO NOT include any PII (no usernames, emails, or IDs) in any artifacts. Mask them if present.
+        4. Output ONLY the JSON object. No markdown wrapping, no extra text.
         """
         
         estimated_tokens = self.estimate_tokens(prompt)
@@ -84,6 +88,7 @@ class LLMSummarizer:
             print(f"Error calling Groq API: {e}")
             # Fallback JSON structure
             fallback = {
+                "top_themes": [],
                 "leadership_pulse": {"health_score": 0, "sentiment": "Unknown", "top_highlight": "Error", "key_risk": "Error"},
                 "product_insights": [],
                 "support_insights": []

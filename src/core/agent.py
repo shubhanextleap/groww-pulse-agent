@@ -74,6 +74,7 @@ class ReviewPulseAgent:
         except Exception as e:
             print(f"Agent: Failed to parse JSON from LLM: {e}")
             report_dict = {
+                "top_themes": [],
                 "leadership_pulse": {"health_score": 0, "sentiment": "Unknown", "top_highlight": "Error", "key_risk": "Error"},
                 "product_insights": [],
                 "support_insights": []
@@ -81,6 +82,15 @@ class ReviewPulseAgent:
 
         # Convert to nice markdown for Docs/Email
         final_report_md = "## Groww Weekly Pulse\n\n"
+        
+        final_report_md += "### Top Themes\n"
+        for t in report_dict.get("top_themes", []):
+            final_report_md += f"**{t.get('theme_name', 'Theme')}**\n"
+            for r in t.get('reviews', []):
+                final_report_md += f"- {r}\n"
+            for q in t.get('quotes', []):
+                final_report_md += f"> \"{q}\"\n"
+            final_report_md += "\n"
         
         pulse = report_dict.get("leadership_pulse", {})
         final_report_md += "### Leadership Pulse\n"

@@ -4,10 +4,27 @@
   "timestamp": "2026-06-17T20:53:00.000000",
   "content": "## Groww Weekly Pulse...",
   "report_data": {
+    "top_themes": [
+        {
+            "theme_name": "Onboarding",
+            "reviews": ["Users find the KYC process slightly confusing", "Account verification takes too long"],
+            "quotes": ["My KYC is pending since 3 days, support is not replying.", "Onboarding was smooth but took longer than expected."]
+        },
+        {
+            "theme_name": "Payments",
+            "reviews": ["UPI deposits are failing occasionally", "Withdrawals are processed very fast"],
+            "quotes": ["Money deducted from bank but not showing in Groww wallet.", "Got my withdrawal amount instantly, very happy!"]
+        },
+        {
+            "theme_name": "Brokerage Charges",
+            "reviews": ["Lack of clarity on hidden charges", "Options trading fees are high"],
+            "quotes": ["Brokerage charge ka samjh nhi aata hai.", "Why are DP charges deducted separately?"]
+        }
+    ],
     "leadership_pulse": {
         "health_score": 88,
         "sentiment": "Positive",
-        "top_highlight": "Users love the new clean interface and fast order execution.",
+        "top_highlight": "Users love the clean interface and fast order execution.",
         "key_risk": "Some confusion around the updated brokerage charge structure."
     },
     "product_insights": [
